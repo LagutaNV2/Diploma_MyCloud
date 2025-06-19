@@ -25,6 +25,7 @@ backend/dist/
 backend/logs/
 backend/node_modules/
 backend/.serverless/
+backend/.env
 
 # Runtime data
 pids
