@@ -3,20 +3,23 @@ from rest_framework import serializers
 from .models import File
 import os
 import uuid
+from django.conf import settings
 
 class FileSerializer(serializers.ModelSerializer):
-    original_name = serializers.CharField(read_only=True)
-    size = serializers.IntegerField(read_only=True)
-    upload_date = serializers.DateTimeField(read_only=True)
-    last_download = serializers.DateTimeField(read_only=True)
-    public_link = serializers.UUIDField(read_only=True)
+    # user = serializers.SerializerMethodField()
+    user_id = serializers.PrimaryKeyRelatedField(
+        source='user.id', read_only=True
+    )
+    username = serializers.CharField(
+        source='user.username', read_only=True
+    )
+
 
     class Meta:
         model = File
-        fields = [
-            'id', 'original_name', 'size', 'upload_date',
-            'last_download', 'comment', 'public_link'
-        ]
+        fields = '__all__'  # Или явный список полей
+        depth = 1  # Включаем связанные объекты
+
 
 class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
@@ -26,28 +29,36 @@ class FileUploadSerializer(serializers.Serializer):
         user = self.context['request'].user
         uploaded_file = validated_data['file']
 
-        # Генерация уникального имени файла
+        if not user.storage_path:
+            user.storage_path = f"user_{user.id}/"
+            user.save(update_fields=['storage_path'])
+
+        # Генерация уникального имени
         original_name = uploaded_file.name
         file_ext = os.path.splitext(original_name)[1]
         unique_name = f"{uuid.uuid4()}{file_ext}"
 
-        # Сохранение файла в хранилище пользователя
-        storage_path = user.storage_path
-        full_path = os.path.join(storage_path, unique_name)
+        # Формирование пути: user_<ID>/<UUID>.<ext>
+        file_path = os.path.join(user.storage_path, unique_name)
+        full_path = os.path.join(settings.STORAGE_PATH, file_path)
 
+        # Создание директорий
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, 'wb') as destination:
+
+        # Сохранение файла
+        with open(full_path, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
 
-        # Создание записи в БД
+        # Создание объекта File
         file = File.objects.create(
             user=user,
             original_name=original_name,
             unique_name=unique_name,
             size=uploaded_file.size,
             comment=validated_data.get('comment', ''),
-            public_link=uuid.uuid4()
+            public_link=uuid.uuid4(),
+            file_path=file_path  # Сохраняем относительный путь
         )
 
         return file

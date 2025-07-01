@@ -26,6 +26,10 @@ backend/logs/
 backend/node_modules/
 backend/.serverless/
 backend/.env
+.env
+.env.test
+storage_files/
+debug.log
 
 # Runtime data
 pids
