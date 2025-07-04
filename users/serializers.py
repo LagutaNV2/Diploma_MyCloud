@@ -53,6 +53,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': False},  # Необязательное поле
             'last_name': {'required': False}   # Необязательное поле
         }
+    def validate_username(self, value):
+        if CustomUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Имя пользователя уже занято.")
+        return value
 
     def create(self, validated_data):
         print("Validated data:", validated_data)

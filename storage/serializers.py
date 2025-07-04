@@ -17,7 +17,7 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = File
-        fields = '__all__'  # Или явный список полей
+        fields = '__all__'
         depth = 1  # Включаем связанные объекты
 
 

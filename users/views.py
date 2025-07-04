@@ -57,18 +57,12 @@ class CheckAuthView(APIView):
             "user": UserSerializer(request.user).data
         })
 
-# # Представления для работы с пользователями
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_queryset(self):
-        # Администраторы видят всех, обычные пользователи - только себя
-        # if self.request.user.is_admin:
-            # return CustomUser.objects.all()
-        # return CustomUser.objects.filter(id=self.request.user.id)
-
         # Для обычных пользователей возвращаем только их профиль без подсчета
         if not self.request.user.is_admin:
             return CustomUser.objects.filter(id=self.request.user.id)
@@ -88,7 +82,6 @@ class UserRegistrationView(APIView):
             user = serializer.save()
             login(request, user)
 
-            # refresh = RefreshToken.for_user(user)
             return Response({
                 'user': UserSerializer(user).data,
             }, status=status.HTTP_201_CREATED)

@@ -36,6 +36,19 @@ class FileViewSet(viewsets.ModelViewSet):
             os.remove(file_path)
         instance.delete()
 
+    # def partial_update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     # Разрешаем обновление только имени и комментария
+    #     serializer = self.get_serializer(
+    #         instance,
+    #         data=request.data,
+    #         partial=True,
+    #         fields=['original_name', 'comment']
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data)
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
@@ -89,3 +102,47 @@ class PublicFileDownloadView(APIView):
         response = FileResponse(open(file_path, 'rb'))
         response['Content-Disposition'] = f'attachment; filename="{file.original_name}"'
         return response
+
+class FileUpdateView(APIView):
+    permission_classes = [IsAuthenticated, IsFileOwnerOrAdmin]
+
+    def patch(self, request, pk):
+        file = get_object_or_404(File, pk=pk)
+        self.check_object_permissions(request, file)
+
+        serializer = FileSerializer(file, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FilePreviewView(APIView):
+    permission_classes = [IsAuthenticated, IsFileOwnerOrAdmin]
+
+    def get(self, request, pk):
+        file = get_object_or_404(File, pk=pk)
+        file_path = os.path.join(settings.STORAGE_PATH, file.user.storage_path, file.unique_name)
+
+        # Проверка существования файла
+        if not os.path.exists(file_path):
+            return Response(
+                {"error": "Файл не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Определение MIME-типа для корректного отображения
+        content_type = 'application/octet-stream'
+        if file.original_name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            content_type = 'image/jpeg' if file.original_name.lower().endswith('.jpg') else f'image/{file.original_name.split(".")[-1]}'
+        elif file.original_name.lower().endswith(('.pdf')):
+            content_type = 'application/pdf'
+        elif file.original_name.lower().endswith(('.txt')):
+            content_type = 'text/plain'
+        elif file.original_name.lower().endswith(('.mp4', '.webm')):
+            content_type = 'video/mp4'
+
+        # Отправка файла без загрузки (inline)
+        response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{file.original_name}"'
+        return response
+    
