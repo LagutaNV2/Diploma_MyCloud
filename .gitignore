@@ -85,6 +85,7 @@ typings/
 .env.test
 
 # Ignore virtual environment
+/venv/
 env/
 venv/
 ENV/
