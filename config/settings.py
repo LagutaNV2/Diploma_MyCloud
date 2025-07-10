@@ -42,6 +42,7 @@ if DEBUG:
         "http://localhost:8000",
         "http://localhost:3000",  # фронтенд на React
         "http://127.0.0.1:3000",
+        "http://194.67.74.177",  # Бэкенд
         "https://lagutanv2.github.io",
     ]
 else:
@@ -74,14 +75,19 @@ CORS_ALLOW_METHODS = [
 
 # Настройки CSRF и сессий
 SESSION_COOKIE_HTTPONLY = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG
+# SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+# CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Отключите параметры, связанные с HTTPS
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -177,6 +183,10 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# путь для загрузки файлов
+MEDIA_URL = '/storage/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'storage_files')
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -184,10 +194,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # базовый путь по умолчанию: BASE_DIR/storage_files
 STORAGE_PATH = os.getenv('STORAGE_PATH', os.path.join(BASE_DIR, 'storage_files'))
 os.makedirs(STORAGE_PATH, exist_ok=True)  # Создание папки, если её нет
-
-# путь для загрузки файлов
-MEDIA_URL = '/storage/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'storage_files')
 
 # Безопасное хеширование паролей
 PASSWORD_HASHERS = [

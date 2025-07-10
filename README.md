@@ -63,6 +63,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
     mkdir /home/django/my_cloud
     cd /home/django/my_cloud
 
+
 5. Клонирование проекта.
 
 Клонируйте проект из репозитория Git https://github.com/LagutaNV2/Diploma_MyCloud_backend :
@@ -94,10 +95,20 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
     chmod 600 /home/django/my_cloud/backend/.env
     chown django:django /home/django/my_cloud/backend/.env
 
-<!-- ??????? -->
 7.3. Отредактируйте файл `config/settings.py`, чтобы настроить подключение к базе данных и домен (???????):
 
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+    предоставление прав user django:
+
+        sudo chown django:django config/settings.py
+
+    открыть для редактирования:
+
+        nano config/settings.py
+
+
+    содержание файла (проверить настройки):
+<!-- ??????? оставить так , как  в файле: os.path.join(BASE_DIR, 'staticfiles') -->
+        STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
 8. Выполните миграции для создания таблиц в базе данных:
@@ -165,15 +176,20 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
                 include proxy_params;
                 proxy_pass http://unix:/home/django/my_cloud/mycloud.sock;
             }
-
+<!-- for in the settings.py STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') -->
             location /static/ {
-                root /home/django/my_cloud;
+                root /home/django/my_cloud/staticfiles/;
             }
 <!-- ??????? -->
             location = /favicon.ico {
                 access_log off;
                 log_not_found off;
             }
+
+            location /storage/ {
+                root /home/django/my_cloud/storage_files/;
+            }
+
         }
 
 
