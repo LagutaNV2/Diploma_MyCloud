@@ -95,20 +95,16 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
     chmod 600 /home/django/my_cloud/backend/.env
     chown django:django /home/django/my_cloud/backend/.env
 
-7.3. Отредактируйте файл `config/settings.py`, чтобы настроить подключение к базе данных и домен (???????):
+7.3. Файл `config/settings.py` настроен на универсальное использование, н если есть необходимость, отредактируйте:
 
     предоставление прав user django:
 
         sudo chown django:django config/settings.py
 
-    открыть для редактирования:
+    открыть для редактирования и проверить настройки:
 
         nano config/settings.py
 
-
-    содержание файла (проверить настройки):
-<!-- ??????? оставить так , как  в файле: os.path.join(BASE_DIR, 'staticfiles') -->
-        STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
 
@@ -116,7 +112,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
 
    python manage.py collectstatic
 
-   
+
 9. Выполните миграции для создания таблиц в базе данных:
 
     python manage.py makemigrations

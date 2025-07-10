@@ -246,7 +246,7 @@ LOGGING = {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': LOGS_DIR / 'errors.log',
-            'formatter': 'verbose',
+            'formatter': 'verbose' if DEBUG else 'simple',
         },
     },
     'filters': {
@@ -258,8 +258,8 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console', 'file'],
-            # 'level': 'DEBUG' if DEBUG else 'INFO',
-            'level': 'INFO',
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+            # 'level': 'INFO',
             'propagate': False,
         },
         'storage': {
