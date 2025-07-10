@@ -14,27 +14,41 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
-# from datetime import timedelta
 import os
 
-load_dotenv()  # Загрузка переменных окружения
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Определение среды (разработка или продакшен)
+ENVIRONMENT = config('ENVIRONMENT', default='development')
+
+
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = ENVIRONMENT == 'development'
 
 # Настройки безопасности
-# !!! Для продакшена добавть реальные домены и IP-адреса
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
 
 
 # Настройки CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://localhost:3000",  # фронтенд на React
-    "http://127.0.0.1:3000",
-    "https://your-production-domain.com",  # deployment domain
-]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:8000",
+        "http://localhost:3000",  # фронтенд на React
+        "http://127.0.0.1:3000",
+        "https://lagutanv2.github.io",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://194.67.74.177",  # deployment domain (IP-адрес)
+        "https://lagutanv2.github.io",
+    ]
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -59,13 +73,14 @@ CORS_ALLOW_METHODS = [
 
 
 # Настройки CSRF и сессий
-SESSION_COOKIE_HTTPONLY = False  # True в production
-SESSION_COOKIE_SECURE = False  # True в production
+SESSION_COOKIE_HTTPONLY = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Application definition
@@ -154,7 +169,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '../../frontend/dist/static'), # Для разработки: раздача статики React
@@ -173,12 +188,6 @@ os.makedirs(STORAGE_PATH, exist_ok=True)  # Создание папки, есл�
 # путь для загрузки файлов
 MEDIA_URL = '/storage/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'storage_files')
-
-
-# Создание папки для логов
-LOGS_DIR = BASE_DIR / 'logs'
-os.makedirs(LOGS_DIR, exist_ok=True)
-
 
 # Безопасное хеширование паролей
 PASSWORD_HASHERS = [
@@ -201,6 +210,9 @@ REST_FRAMEWORK = {
 }
 
 
+# Создание папки для логов
+LOGS_DIR = BASE_DIR / 'logs'
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 LOGGING = {
     'version': 1,
