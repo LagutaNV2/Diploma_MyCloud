@@ -2,6 +2,7 @@
 Облачное хранилище My Cloud (сервер)
 
 backend: «Brown Nihonium» с Django, IP-адрес 194.67.74.177
+
 frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
 
 # Инструкция для деплоя на REG.RU
@@ -19,7 +20,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
 
    2.3. и создайте ключ на рег.ру (дайте имя и вставьте скопированное)
 
-   2.3. выполните подключение к серверу:
+   2.4. выполните подключение к серверу:
 
         ssh root@ip-adress
 
@@ -94,7 +95,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
     chown django:django /home/django/my_cloud/backend/.env
 
 <!-- ??????? -->
-7.3. Отредактируйте файл `config/settings.py`, чтобы настроить подключение к базе данных и домен:
+7.3. Отредактируйте файл `config/settings.py`, чтобы настроить подключение к базе данных и домен (???????):
 
     STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
@@ -102,6 +103,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
 8. Выполните миграции для создания таблиц в базе данных:
 
     python manage.py makemigrations
+
     python manage.py migrate
 
 
