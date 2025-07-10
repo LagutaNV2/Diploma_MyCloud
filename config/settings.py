@@ -22,16 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Определение среды (разработка или продакшен)
 ENVIRONMENT = config('ENVIRONMENT', default='development')
-
+DEBUG = ENVIRONMENT == 'development'
 
 SECRET_KEY = config('SECRET_KEY')
-# DEBUG = config('DEBUG', default=False, cast=bool)
-DEBUG = ENVIRONMENT == 'development'
+
 
 # Настройки безопасности
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1',
+    default='194.67.74.177,localhost,127.0.0.1,lagutanv2.github.io',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -47,7 +46,7 @@ if DEBUG:
     ]
 else:
     CORS_ALLOWED_ORIGINS = [
-        "http://194.67.74.177",  # deployment domain (IP-адрес)
+        "http://194.67.74.177",  # IP-адрес сервера
         "https://lagutanv2.github.io",
     ]
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
@@ -88,6 +87,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 0
 
 # Application definition
 INSTALLED_APPS = [
@@ -145,7 +145,7 @@ DATABASES = {
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -177,9 +177,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../../frontend/dist/static'), # Для разработки: раздача статики React
-]
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, '../../frontend/dist/static'),
+    ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 

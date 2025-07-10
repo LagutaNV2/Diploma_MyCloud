@@ -77,7 +77,7 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
 
     sudo apt install python3.10 python3.10-venv python3.10-dev
     python3.10 -m venv env
-    source venv/bin/activate
+    source venv/bin/activate или source env/bin/activate
 
 6.2. Установите зависимости из файла `requirements.txt`:
 
@@ -111,16 +111,19 @@ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
         STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
-8. Выполните миграции для создания таблиц в базе данных:
+
+8. Соберите статические файлы:
+
+   python manage.py collectstatic
+
+   
+9. Выполните миграции для создания таблиц в базе данных:
 
     python manage.py makemigrations
 
     python manage.py migrate
 
 
-9. Соберите статические файлы:
-
-   python manage.py collectstatic
 
 10. Создайте суперпользователя для административной панели:
 
