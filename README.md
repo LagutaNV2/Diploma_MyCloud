@@ -88,75 +88,98 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 3. Обновление системы и установка базовых компонентов:
 
     sudo apt update && sudo apt upgrade -y
-    sudo apt install -y nginx postgresql postgresql-contrib libpq-dev python3-pip python3.10 python3.10-venv python3.10-dev nginx git
 
-4. Настройка firewall:
+    sudo apt install -y git nginx libpq-dev python3-pip
+
+    sudo apt install -y python3 python3-venv python3-dev
+
+    sudo apt install -y postgresql postgresql-contrib
+
+
+ Настройка firewall:
 
     sudo ufw allow 'Nginx Full'
+
     sudo ufw enable
 
-5. Настройка базы данных PostgreSQL
+4. Настройка базы данных PostgreSQL
 
-    5.1. Создайте базу данных и пользователя для вашего проекта:
+    4.1. Создайте базу данных и пользователя для вашего проекта:
 
         sudo -u postgres psql
 
-    5.2. выполните следующие команды (замените значения переменных на свои):
+    4.2. выполните следующие команды (замените значения переменных на свои):
 
         CREATE DATABASE mycloud_db;
+
         CREATE USER mycloud_user WITH PASSWORD 'your_password';
+
         ALTER ROLE mycloud_user SET client_encoding TO 'utf8';
+
         ALTER ROLE mycloud_user SET default_transaction_isolation TO 'read committed';
+
         ALTER ROLE mycloud_user SET timezone TO 'Europe/Moscow';
+
         GRANT ALL PRIVILEGES ON DATABASE mycloud_db TO mycloud_user;
 
-    5.3. Выйдите из `psql`:
+
+    4.3. Выйдите из `psql`:
 
         \q
 
-6. Создание директории и системного пользователя для проекта:
+5. Создание директории и системного пользователя для проекта:
 
-    6.1. Создайте системного пользователя (например, для 'django'- adduser django):
+    5.1. Создайте системного пользователя
+       (например, для 'django'- adduser django):
 
         adduser www
 
-    6.2. Добавьте пользователя www в группу sudo:
+    5.2. Добавьте пользователя www в группу sudo:
 
         usermod -aG sudo www
 
-    6.3. Переключитесь на системного пользователя, под которым будет размещен проект:
+    5.3. Переключитесь на системного пользователя, под которым будет размещен проект:
 
         sudo su www
 
-    6.4. Создайте директорию для проекта и перейдите в нее (например, mkdir /home/django/my_cloud/backend):
+    5.4. Создайте директорию для проекта и перейдите в нее (например, mkdir /home/django/my_cloud/backend):
 
-        mkdir /var/www/my_cloud/backend
-        cd /var/www/my_cloud/backend
+        Создаем корневую директорию проекта в домашней директории
+
+            mkdir -p ~/my_cloud
+
+        Создаем директорию для бекенда
+
+            mkdir ~/my_cloud/backend
+
+        Переходим в рабочую директорию
+
+            cd ~/my_cloud/backend
 
 
 
-7. Разворачиваем backend (Django)
+6. Разворачиваем backend (Django)
 
-    7.1. Клонирование проекта из репозитория Git https://github.com/LagutaNV2/Diploma_MyCloud_backend в папку /var/www/my_cloud/backend:
+    6.1. Клонирование проекта из репозитория Git https://github.com/LagutaNV2/Diploma_MyCloud_backend в папку /var/www/my_cloud/backend:
 
         git clone https://github.com/LagutaNV2/Diploma_MyCloud_backend.git .
 
 
-    7.2. Создание виртуального окружения
+    6.2. Создание виртуального окружения
 
-          7.2.1. Создайте и активируйте виртуальное окружение для python3.10:
+          6.2.1. Создайте и активируйте виртуальное окружение для python3.10:
 
-              python3.10 -m venv venv
+              python3 -m venv venv
               source venv/bin/activate
 
-          7.2.2. Установите зависимости из файла `requirements.txt`:
+          6.2.2. Установите зависимости из файла `requirements.txt`:
 
               pip install -r requirements.txt
 
 
-    7.3. Настройка конфигурации Django
+    6.3. Настройка конфигурации Django
 
-      7.3.1. Для хранения переменных окружения используется '.env'. Создайте файл '.env' на сервере в /var/www/my_cloud/backend (образец: '.env.example'):
+      6.3.1. Для хранения переменных окружения используется '.env'. Создайте файл '.env' на сервере в /var/www/my_cloud/backend (образец: '.env.example'):
 
           nano .env
 
@@ -165,7 +188,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
           sudo chown django:django /var/www/my_cloud/backend/.env
           sudo chmod 600 /var/www/my_cloud/backend/.env
 
-      7.3.2. Файл `config/settings.py` настроен на универсальное использование, но если есть необходимость, отредактируйте:
+      6.3.2. Файл `config/settings.py` настроен на универсальное использование, но если есть необходимость, отредактируйте:
 
           предоставление прав user django:
 
@@ -178,7 +201,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
 
 
-      7.3.3. Выполните миграции для создания таблиц в базе данных:
+      6.3.3. Выполните миграции для создания таблиц в базе данных:
 
           python manage.py makemigrations
 
@@ -186,27 +209,27 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
 
 
-      7.3.4. Соберите статические файлы сервера:
+      6.3.4. Соберите статические файлы сервера:
 
           python manage.py collectstatic
 
 
-      7.3.5. Создайте суперпользователя для административной панели:
+      6.3.5. Создайте суперпользователя для административной панели:
 
           python manage.py createsuperuser
 
 
-8.  Настройка Gunicorn
+7.  Настройка Gunicorn
 
-    8.1. Установка Gunicorn
+    7.1. Установка Gunicorn
 
         pip install gunicorn
 
-    8.2. В корне backend создаём файл сервиса для Gunicorn:
+    7.2. В корне backend создаём файл сервиса для Gunicorn:
 
         sudo nano /etc/systemd/system/gunicorn.service
 
-    8.3. Добавим содержимое, обращая внимание на пути, имя проекта и пользователя (здесь - для пути: "/home/django/my_cloud/backend"):
+    7.3. Добавим содержимое, обращая внимание на пути, имя проекта и пользователя (здесь - для пути: "/home/django/my_cloud/backend"):
 
             [Unit]
             Description=Gunicorn for Cloud Storage Django "My cloud"
@@ -231,28 +254,28 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
             [Install]
             WantedBy=multi-user.target
 
-    8.4. Запустите и включите сервис:
+    7.4. Запустите и включите сервис:
 
             sudo systemctl daemon-reload
             sudo systemctl start gunicorn
             sudo systemctl enable gunicorn
 
-9.  Разворачиваем frontend (React)
+8.  Разворачиваем frontend (React)
 
-    9.1. Клонирование проекта из репозитория [Git https://github.com/LagutaNV2/Diploma_MyCloud_backend] на локальную машину.
+    8.1. Клонирование проекта из репозитория [Git https://github.com/LagutaNV2/Diploma_MyCloud_backend] на локальную машину.
 
-    9.2. Установить зависимости и собрать проект:
+    8.2. Установить зависимости и собрать проект:
 
             npm install
             npm run build
 
 
-    9.3. Копируем статику из папки dist на сервер, после чего директория /var/www/frontend будет содержать статические HTML, JS и CSS файлы:
+    8.3. Копируем статику из папки dist на сервер, после чего директория /var/www/frontend будет содержать статические HTML, JS и CSS файлы:
 
         scp -r dist/* root@ваш-ip:/var/www/my_cloud/frontend/dist
 
 
-    9.4. Создание .env.production в папке /var/www/my_cloud/frontend:
+    8.4. Создание .env.production в папке /var/www/my_cloud/frontend:
 
           nano .env.production
 
@@ -262,14 +285,14 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
             DEBUG=false
             PUBLIC_PATH=/
 
-10.    Настройка Nginx
+9.    Настройка Nginx
 
-    10.1. Создайте конфигурационный файл для Nginx:
+    9.1. Создайте конфигурационный файл для Nginx:
 
         sudo nano /etc/nginx/sites-available/my_cloud
 
 
-    10.2. Содержимое файла:
+    9.2. Содержимое файла:
 
         server {
             listen 80;
@@ -342,14 +365,14 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
             }
         }
 
-    10.3. Активируйте конфигурацию:
+    9.3. Активируйте конфигурацию:
 
         sudo ln -s /etc/nginx/sites-available/my_cloud /etc/nginx/sites-enabled/
         sudo nginx -t
         sudo systemctl restart nginx
 
 
-11.  Проверка работоспособности
+10.  Проверка работоспособности
 
      Проверка Gunicorn:
 
