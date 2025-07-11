@@ -41,14 +41,14 @@ if DEBUG:
         "http://localhost:8000",
         "http://localhost:3000",  # фронтенд на React
         "http://127.0.0.1:3000",
-        "http://194.67.74.177",  # Бэкенд
-        "https://lagutanv2.github.io",
     ]
 else:
-    CORS_ALLOWED_ORIGINS = [
-        "http://194.67.74.177",  # IP-адрес сервера
-        "https://lagutanv2.github.io",
-    ]
+    CORS_ALLOWED_ORIGINS = config( # динамические настройки
+        'CORS_ALLOWED_ORIGINS',
+        default='http://localhost,http://127.0.0.1',
+        cast=lambda v: [s.strip() for s in v.split(',')]
+    )
+
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [

@@ -28,9 +28,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include(users_urls)),
     path('api/storage/', include(storage_urls)),
+]
 
-    # Для SPA: перенаправляем все остальные запросы на фронтенд
-    re_path(r'^(?!api/).*', TemplateView.as_view(template_name='index.html')),
+urlpatterns += [
+    re_path(r'^(?!api/|admin/|static/|storage/|health/).*',
+            TemplateView.as_view(template_name='index.html'))
 ]
 
 if settings.DEBUG:
