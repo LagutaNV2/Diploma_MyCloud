@@ -1,9 +1,10 @@
 # Дипломный проект по профессии «Fullstack-разработчик на Python»
 Облачное хранилище My Cloud (сервер)
 
-УДАЛИТЬ backend: «Brown Nihonium» с Django, IP-адрес 194.67.74.177
+ip-адрес: 89.104.71.24
 
-УДАЛИТЬ frontend: https://lagutanv2.github.io/Diploma_MyCloud_frontend/
+frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
+
 
 
 Проект разворачивается на виртуальном сервере (Reg.ru) на основе:
@@ -16,14 +17,23 @@
 # Схема проекта:
 /var/www/my_cloud/
 ├── backend/
+
 │   ├── venv/
+
 │   ├── staticfiles/    # collectstatic
+
 │   ├── storage_files/  # пользовательские файлы
+
 │   ├── .env            # production settings
+
 │   └── ...             # исходный код
+
 |   └──  gunicorn.service
+
 └── frontend/
+
     ├── dist/           # собранный фронтенд
+
     └── .env.production # production env vars
 
 
@@ -80,7 +90,7 @@
     sudo apt update && sudo apt upgrade -y
     sudo apt install -y nginx postgresql postgresql-contrib libpq-dev python3-pip python3.10 python3.10-venv python3.10-dev nginx git
 
-4. Настройка firewall (???):
+4. Настройка firewall:
 
     sudo ufw allow 'Nginx Full'
     sudo ufw enable
@@ -250,6 +260,7 @@
 
             API_BASE_URL=/api
             DEBUG=false
+            PUBLIC_PATH=/
 
 10.    Настройка Nginx
 
