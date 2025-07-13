@@ -1,4 +1,3 @@
-# cloud_storage/backend/storage/models.py
 import os
 import uuid
 from django.db import models

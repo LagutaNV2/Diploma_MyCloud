@@ -1,4 +1,3 @@
-# config/urls.py
 # Настройка главного роутера
 from django.contrib import admin
 from django.urls import path, include, re_path

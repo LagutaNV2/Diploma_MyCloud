@@ -1,4 +1,3 @@
-# storage/permissions.py
 from rest_framework import permissions
 
 class IsFileOwnerOrAdmin(permissions.BasePermission):

@@ -1,4 +1,3 @@
-# users/views.py
 from django.contrib.auth import login, logout, authenticate
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator

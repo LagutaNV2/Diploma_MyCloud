@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-# backend/config/settings.py
 
 from pathlib import Path
 from decouple import config
@@ -79,7 +78,7 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = not DEBUG
+CSRF_COOKIE_HTTPONLY = False #
 # CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
 
