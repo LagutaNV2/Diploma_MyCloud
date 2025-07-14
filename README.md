@@ -191,7 +191,6 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
     7.3. Добавим содержимое, обращая внимание на пути, имя проекта и пользователя:
 
-        ```
             [Unit]
             Description=Gunicorn for Cloud Storage Django "My cloud"
             After=network.target
@@ -207,9 +206,8 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
             ExecStart=/home/django/my_cloud/backend/venv/bin/gunicorn \
                     --workers 3 \
-                    --bind unix:/tmp/gunicorn.sock \
-                    (или '--bind': 'unix:/home/django/my_cloud/backend/gunicorn.sock')
-                     --forwarded-allow-ips="*"\                      --access-logfile - \
+                    --bind': 'unix:/home/django/my_cloud/backend/gunicorn.sock'
+                    --forwarded-allow-ips="*"\                      --access-logfile - \
                     config.wsgi:application
 
             Restart=always
@@ -356,6 +354,7 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
                 root /usr/share/nginx/html;
             }
         }
+
 
     9.3. Активируйте конфигурацию:
 
