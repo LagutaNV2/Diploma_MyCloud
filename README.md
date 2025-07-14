@@ -1,21 +1,22 @@
-# Дипломный проект по профессии «Fullstack-разработчик на Python»
-Облачное хранилище My Cloud (сервер)
+### Дипломный проект по профессии «Fullstack-разработчик на Python»
+## Облачное хранилище My Cloud (сервер)
 
-ip-адрес: 89.104.71.24
+ip-адрес: [http://89.104.71.24]
 
-frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
+frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
 
 
-Проект разворачивается на виртуальном сервере (Reg.ru) на основе:
+**Проект разворачивается на виртуальном сервере (Reg.ru) на основе:**
 
 - Ubuntu
 - Nginx (как веб-сервер и обратный прокси)
 - Gunicorn (для запуска Django-приложения)
 - PostgreSQL (база данных)
 
-# Схема проекта:
+## Схема проекта:
 /var/www/my_cloud/
+
 ├── backend/
 
 │   ├── venv/
@@ -37,7 +38,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
     └── .env.production # production env vars
 
 
-# План действий:
+## План действий:
 
 Подготовка сервера:
 - Ключи и заказ сервера
@@ -66,7 +67,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
 
 
-# Пошаговая инструкция для деплоя на REG.RU
+## Пошаговая инструкция для деплоя на REG.RU
 1.	Закажите на рег.ру VPS сервер [Рег.облако].
 
 2. Подключитесь к серверу по SSH:
@@ -75,9 +76,9 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
     ssh-keygen -t rsa
     cat ~/.ssh/id_rsa.pub
 
-   2.2. создайте ключ на рег.ру (дайте имя и вставьте скопированное)
+   2.2. создайте ключ на рег.ру *(дайте имя и вставьте скопированное)*
 
-   2.3. подключитесь к серверу (терминал на локальной машине):
+   2.3. подключитесь к серверу *(терминал на локальной машине)*:
 
     ssh root@ip-adress
 
@@ -93,7 +94,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
 
 4. Настройка базы данных PostgreSQL
-
+   ```
     sudo -u postgres psql
     CREATE DATABASE mycloud_db;
     CREATE USER mycloud_user WITH PASSWORD 'your_password';
@@ -113,7 +114,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
     usermod -aG sudo www (usermod -aG sudo django)
     sudo su www (sudo su django)
 
-   Создайте директорию для проекта и перейдите в нее (например, mkdir /home/django/my_cloud/backend):
+   Создайте директорию для проекта и перейдите в нее *(например, mkdir /home/django/my_cloud/backend)*:
 
     mkdir -p ~/my_cloud
     mkdir ~/my_cloud/backend
@@ -184,7 +185,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
         sudo nano /etc/systemd/system/gunicorn.service
 
     7.3. Добавим содержимое, обращая внимание на пути, имя проекта и пользователя:
-
+            ```
             [Unit]
             Description=Gunicorn for Cloud Storage Django "My cloud"
             After=network.target
@@ -222,7 +223,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
         sudo systemctl start gunicorn
         sudo systemctl enable gunicorn
 
-8.  Разворачиваем frontend (React) (здесь - для пути: "/home/django/my_cloud/frontend")
+8.  Разворачиваем frontend (React) *(здесь - для пути: "/home/django/my_cloud/frontend")*
 
     8.1. Клонирование проекта из репозитория [Git https://github.com/LagutaNV2/Diploma_MyCloud_backend] на локальную машину.
 
@@ -234,9 +235,11 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
     8.3. Создаем папку /home/django/frontend на сервере и копируем статику из папки dist на сервер, после чего она будет содержать статические HTML, JS и CSS файлы:
 
       на сервере:
+
         mkdir ~/my_cloud/frontend
 
       В терминале (на локальной машине):
+
         scp -r dist/* root@ваш-ip:/home/django/my_cloud/frontend/dist
 
 
@@ -265,7 +268,7 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
 
     9.2. Содержимое файла:
-
+        ```
         server {
             listen 80;
             listen [::]:80;
@@ -373,15 +376,11 @@ frontend: https://github.com/LagutaNV2/Diploma_MyCloud_frontend
 
             curl http://ваш Ip/health/
 
-        Проверка статики Django
-
-            curl -I http://ваш Ip/static/admin/css/base.css
-
         Проверка фронтенда
 
             curl -I http://ваш Ip
 
-        Проверка работы приложения
+        Проверка работы приложения в браузере
 
           - Откройте браузер и перейдите по адресу `http://ваш Ip`.
           - Убедитесь, что проект загружается корректно.
