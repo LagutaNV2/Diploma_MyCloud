@@ -29,7 +29,6 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
 │   └── ...             # исходный код
 
-|   └──  gunicorn.service
 
 └── frontend/
 
@@ -68,22 +67,22 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
 
 ## Пошаговая инструкция для деплоя на REG.RU
-1.	Закажите на рег.ру VPS сервер [Рег.облако].
+1.	Закажите на рег.ру VPS сервер.
 
 2. Подключитесь к серверу по SSH:
    2.1. на локальной машине:
-
+```
     ssh-keygen -t rsa
     cat ~/.ssh/id_rsa.pub
 
    2.2. создайте ключ на рег.ру *(дайте имя и вставьте скопированное)*
 
    2.3. подключитесь к серверу *(терминал на локальной машине)*:
-
+```
     ssh root@ip-adress
 
 3. Обновление системы и установка базовых компонентов:
-
+```
     sudo apt update && sudo apt upgrade -y
 
     sudo apt install -y git nginx libpq-dev python3-pip
@@ -109,13 +108,13 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
     \q
 
 5. Создание директории и системного пользователя для проекта:
-
-    adduser www (здесь www=django->adduser django)
-    usermod -aG sudo www (usermod -aG sudo django)
-    sudo su www (sudo su django)
+   ```
+    adduser www *(здесь www=django->adduser django)*
+    usermod -aG sudo www *(usermod -aG sudo django)*
+    sudo su www *(sudo su django)*
 
    Создайте директорию для проекта и перейдите в нее *(например, mkdir /home/django/my_cloud/backend)*:
-
+   ```
     mkdir -p ~/my_cloud
     mkdir ~/my_cloud/backend
     cd ~/my_cloud/backend
@@ -185,7 +184,7 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
         sudo nano /etc/systemd/system/gunicorn.service
 
     7.3. Добавим содержимое, обращая внимание на пути, имя проекта и пользователя:
-            ```
+        ```
             [Unit]
             Description=Gunicorn for Cloud Storage Django "My cloud"
             After=network.target
@@ -268,7 +267,7 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
 
 
     9.2. Содержимое файла:
-        ```
+
         server {
             listen 80;
             listen [::]:80;
@@ -390,6 +389,7 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
     win + R
     wsl
 
+   ```
     ssh django@89.104.71.24
     source ~/my_cloud/backend/venv/bin/activate
 
