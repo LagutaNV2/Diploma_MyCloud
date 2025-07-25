@@ -24,6 +24,24 @@ class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
     comment = serializers.CharField(required=False)
 
+    def validate_file(self, value):
+
+        if not hasattr(value, 'size'):
+            raise serializers.ValidationError("Некорректный объект файла")
+
+        # Проверка размера файла ( 1 МБ)
+        max_size_mb = 1
+        max_size = max_size_mb * 1024 * 1024
+
+        if value.size > max_size:
+            file_size_mb = value.size / (1024 * 1024)
+
+            raise serializers.ValidationError(
+                f"Файл слишком большой ({file_size_mb:.2f} MB). "
+                f"Максимальный размер: {max_size_mb} MB"
+            )
+        return value
+
     def create(self, validated_data):
         user = self.context['request'].user
         uploaded_file = validated_data['file']

@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.files.count()
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer): #
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     first_name = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
@@ -49,21 +49,29 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'first_name', 'last_name', 'is_admin']
         extra_kwargs = {
             'is_admin': {'default': False},
-            'first_name': {'required': False},  # Необязательное поле
-            'last_name': {'required': False}   # Необязательное поле
+            'first_name': {'required': False},
+            'last_name': {'required': False}
         }
     def validate_username(self, value):
         if CustomUser.objects.filter(username=value).exists():
             raise serializers.ValidationError("Имя пользователя уже занято.")
         return value
 
+    def validate_password(self, value):
+        from django.contrib.auth.password_validation import validate_password
+        validate_password(value)  # Встроенная валидация сложности пароля
+        return value
+
     def create(self, validated_data):
         print("Validated data:", validated_data)
-        user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
+        try: #
+            user = CustomUser.objects.create_user(
+                username=validated_data['username'],
+                first_name=validated_data.get('first_name', ''),
+                last_name=validated_data.get('last_name', ''),
+                email=validated_data['email'],
+                password=validated_data['password']
+            )
+            return user
+        except Exception as e:
+            raise serializers.ValidationError(f"Ошибка создания пользователя: {str(e)}")

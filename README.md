@@ -256,6 +256,7 @@ frontend: [https://github.com/LagutaNV2/Diploma_MyCloud_frontend]
             API_BASE_URL=/api
             DEBUG=false
             PUBLIC_PATH=/
+            NODE_ENV=production
             GENERATE_SOURCEMAP=false
 
     8.5. пдоставьте подльзователю права для работы с dist:

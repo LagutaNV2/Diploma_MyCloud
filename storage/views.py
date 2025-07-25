@@ -1,4 +1,3 @@
-# storage/views.py
 import os
 import logging
 from django.conf import settings
@@ -36,30 +35,20 @@ class FileViewSet(viewsets.ModelViewSet):
             os.remove(file_path)
         instance.delete()
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     # Разрешаем обновление только имени и комментария
-    #     serializer = self.get_serializer(
-    #         instance,
-    #         data=request.data,
-    #         partial=True,
-    #         fields=['original_name', 'comment']
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data)
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-class FileUploadView(APIView):
+class FileUploadView(APIView): #
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            serializer = FileUploadSerializer(data=request.data, context={'request': request})
+            serializer = FileUploadSerializer(
+                data=request.data,
+                context={'request': request}
+            )
             if serializer.is_valid():
                 file = serializer.save()
                 return Response(
@@ -67,13 +56,20 @@ class FileUploadView(APIView):
                     status=status.HTTP_201_CREATED
                 )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.error(f"File upload error: {str(e)}")
+            error_detail = str(e)
+            if "ValidationError" in error_detail:
+                error_detail = "Ошибка валидации файла"
+
             return Response(
-                {"error": "File upload failed", "detail": str(e)},
+                {
+                    "error": "File upload failed",
+                    "detail": error_detail
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
 
 class FileDownloadView(APIView):
     permission_classes = [IsAuthenticated, IsFileOwnerOrAdmin]
@@ -145,4 +141,3 @@ class FilePreviewView(APIView):
         response = FileResponse(open(file_path, 'rb'), content_type=content_type)
         response['Content-Disposition'] = f'inline; filename="{file.original_name}"'
         return response
-    

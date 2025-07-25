@@ -56,10 +56,19 @@ class CheckAuthView(APIView):
             "user": UserSerializer(request.user).data
         })
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet): #
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def create(self, request, *args, **kwargs): #
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def get_queryset(self):
         # Для обычных пользователей возвращаем только их профиль без подсчета
