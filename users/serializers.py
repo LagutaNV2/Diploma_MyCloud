@@ -64,7 +64,7 @@ class UserRegisterSerializer(serializers.ModelSerializer): #
 
     def create(self, validated_data):
         print("Validated data:", validated_data)
-        try: #
+        try:
             user = CustomUser.objects.create_user(
                 username=validated_data['username'],
                 first_name=validated_data.get('first_name', ''),
