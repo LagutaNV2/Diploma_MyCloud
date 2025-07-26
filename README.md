@@ -589,16 +589,16 @@ sudo systemctl restart gunicorn
 
 **Решение:**
 ```
-Проверьте установку drf-spectacular
+# Проверьте установку drf-spectacular
 
 source venv/bin/activate
 pip list | grep drf-spectacular
 
-Проверьте доступность схемы
+# Проверьте доступность схемы
 
 curl http://localhost/api/schema/
 
-
+```
 
 ### 6. Недостаток дискового пространства
 
