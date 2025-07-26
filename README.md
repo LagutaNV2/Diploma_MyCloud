@@ -608,9 +608,6 @@ curl http://localhost/api/schema/
 # Проверьте свободное место
 df -h
 
-
 # Очистка старых резервных копий
-
-```
 find /backups -name "*.sql" -mtime +30 -delete
 ```
