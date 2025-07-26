@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     'users',
     'storage',
     'corsheaders',  # для CORS
+    'drf_spectacular', # документация API
 ]
 
 MIDDLEWARE = [
@@ -213,8 +214,17 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ],
     'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+# Настройки документации API
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'My Cloud Storage API',
+    'DESCRIPTION': 'API для облачного хранилища файлов',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+}
 
 # Создание папки для логов
 LOGS_DIR = BASE_DIR / 'logs'
