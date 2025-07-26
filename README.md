@@ -309,6 +309,7 @@ http://ваш-ip/api/docs/
 
     9.2. Содержимое файла:
 
+        ```
         server {
             listen 80;
             listen [::]:80;
@@ -323,7 +324,8 @@ http://ваш-ip/api/docs/
             location @413_json {
                 add_header Content-Type application/json;
                 return 413 '{"file": ["Файл слишком большой (превышает 1 MB). Максимальный размер: 1 MB"]}';
-}
+            }
+
             # Корень для фронтенда
             root /var/www/my_cloud/frontend/dist;
 
@@ -333,7 +335,6 @@ http://ваш-ip/api/docs/
                 add_header Cache-Control "no-cache, no-store, must-revalidate";
                 add_header Pragma "no-cache";
                 add_header Expires "0";
-
             }
 
             # Статика Django (admin, DRF)
@@ -341,7 +342,6 @@ http://ваш-ip/api/docs/
                 alias /var/www/my_cloud/backend/staticfiles/;
                 expires 30d;
                 access_log off;
-
             }
 
             # Медиафайлы (загруженные пользователями)
@@ -349,7 +349,6 @@ http://ваш-ip/api/docs/
                 alias /var/www/my_cloud/backend/storage_files/;
                 expires 30d;
                 access_log off;
-
             }
 
             # API endpoints
@@ -398,6 +397,7 @@ http://ваш-ip/api/docs/
                 root /usr/share/nginx/html;
             }
         }
+        ```
 
 
     9.3. Активируйте конфигурацию:
@@ -523,9 +523,10 @@ journalctl -u gunicorn --since "5 minutes ago"
 
 # Перезапустите службу
 sudo systemctl restart gunicorn
-
+```
 
 ### 2. Ошибки подключения к базе данных
+
 Симптомы:
 
 Django выдает ошибки вида "could not connect to server"
@@ -534,7 +535,7 @@ Django выдает ошибки вида "could not connect to server"
 
 
 **Решение:**
-
+```
 # Проверьте доступность PostgreSQL
 
 sudo systemctl status postgresql
@@ -543,7 +544,7 @@ sudo systemctl status postgresql
 
 sudo -u postgres psql -c "\l"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE mycloud_db TO mycloud_user;"
-
+```
 
 ### 3. Проблемы с загрузкой файлов
 Симптомы:
@@ -553,7 +554,7 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE mycloud_db TO mycloud
 Файлы не сохраняются
 
 **Решение:**
-
+```
 Увеличьте лимит в Nginx:
 
 nginx
@@ -563,7 +564,7 @@ client_max_body_size 500M;
 Перезапустите Nginx:
 
 sudo systemctl restart nginx
-
+```
 
 ### 4. Проблемы с CORS
 Симптомы:
@@ -573,9 +574,8 @@ sudo systemctl restart nginx
 Ошибки "Blocked by CORS policy"
 
 **Решение:**
-
+```
 Проверьте настройки в .env:
-
 
 CORS_ALLOWED_ORIGINS=http://ваш-ip,http://localhost:3000
 
@@ -583,9 +583,10 @@ CORS_ALLOWED_ORIGINS=http://ваш-ip,http://localhost:3000
 
 sudo systemctl restart gunicorn
 
-
+```
 
 ### 5. Документация API не отображается
+
 **Решение:**
 
 # Проверьте установку drf-spectacular
@@ -606,7 +607,7 @@ curl http://localhost/api/schema/
 ```
 # Проверьте свободное место
 df -h
-```
+
 
 # Очистка старых резервных копий
 
