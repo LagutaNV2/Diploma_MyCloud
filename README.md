@@ -588,13 +588,13 @@ sudo systemctl restart gunicorn
 ### 5. Документация API не отображается
 
 **Решение:**
-
-# Проверьте установку drf-spectacular
 ```
+Проверьте установку drf-spectacular
+
 source venv/bin/activate
 pip list | grep drf-spectacular
-```
-# Проверьте доступность схемы
+
+Проверьте доступность схемы
 
 curl http://localhost/api/schema/
 
